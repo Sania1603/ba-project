@@ -1,4 +1,4 @@
-# ZylaCart — Churn & Revenue Leakage Analysis
+# ZylaCart - Churn & Revenue Leakage Analysis
 ### Business Intelligence Case Study | Sania Sultana
 
 🔗 [View Live Dashboard](https://sania1603.github.io/ba-project)
@@ -8,10 +8,10 @@ A D2C e-commerce brand was losing ₹1.2Cr/month in preventable revenue despite 
 
 ## What I Did
 - RFM Segmentation across 48K customers (Champions, Loyal, At-Risk, New)
-- Cohort Retention Analysis — identified all cohorts drop below 20% by Month 2
-- Conversion Funnel Analysis — pinpointed 42% drop-off at checkout initiation
+- Cohort Retention Analysis - identified all cohorts drop below 20% by Month 2
+- Conversion Funnel Analysis - pinpointed 42% drop-off at checkout initiation
 - ABC Product Classification across 6 categories
-- Executive KPI Dashboard — Repeat Rate, CAC, LTV, Cart Abandonment
+- Executive KPI Dashboard - Repeat Rate, CAC, LTV, Cart Abandonment
 
 ## Tools
 SQL · Python (pandas) · Power BI · Excel · Google Analytics 4
