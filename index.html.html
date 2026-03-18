@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce Intelligence Report — Sania Sultana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0d1421;
+    --card: #111827;
+    --card2: #141e2e;
+    --border: rgba(255,255,255,0.06);
+    --border2: rgba(255,255,255,0.1);
+    --teal: #00d4aa;
+    --teal2: #00b894;
+    --gold: #f0b429;
+    --gold2: #e09900;
+    --red: #ff6b6b;
+    --blue: #4da6ff;
+    --purple: #a78bfa;
+    --text: #f0f4ff;
+    --muted: #8892a4;
+    --muted2: #5a6478;
+    --accent: #00d4aa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .wrapper { max-width: 1280px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* ══════ TOP BAR ══════ */
+  .topbar {
+    background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%);
+    border-bottom: 1px solid rgba(0,212,170,0.2);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-dot {
+    width: 10px; height: 10px;
+    background: var(--teal);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--teal);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+  }
+  .brand-text { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+  .brand-text span { color: var(--teal); font-weight: 600; }
+  .topbar-links { display: flex; gap: 20px; align-items: center; }
+  .topbar-links a {
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .topbar-links a:hover { color: var(--teal); }
+  .topbar-tag {
+    font-size: 10px;
+    background: rgba(0,212,170,0.12);
+    color: var(--teal);
+    border: 1px solid rgba(0,212,170,0.25);
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ══════ HERO ══════ */
+  .hero {
+    padding: 64px 32px 48px;
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -100px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,170,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 20px;
+  }
+  .eyebrow-line { width: 32px; height: 1px; background: var(--teal); }
+  .eyebrow-text {
+    font-size: 11px; color: var(--teal); letter-spacing: 0.15em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 em { font-style: italic; color: var(--teal); }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 620px;
+    margin-bottom: 32px;
+    line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 3px; }
+  .meta-label { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.1em; }
+  .meta-value { font-size: 13px; font-weight: 500; color: var(--text); }
+  .meta-value.highlight { color: var(--teal); }
+
+  /* ══════ SECTION ══════ */
+  .section { padding: 0 32px 48px; max-width: 1280px; margin: 0 auto; }
+  .section-header {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 24px;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--teal);
+    opacity: 0.7; letter-spacing: 0.05em;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ══════ PROBLEM STATEMENT ══════ */
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .problem-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .problem-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+  }
+  .problem-card.gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
+  .problem-card.red::before { background: linear-gradient(90deg, var(--red), transparent); }
+  .problem-card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+  .problem-card h4 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin-bottom: 10px; font-weight: 500;
+  }
+  .problem-card p { font-size: 14px; color: var(--text); line-height: 1.65; }
+  .context-block {
+    background: linear-gradient(135deg, rgba(0,212,170,0.05), rgba(0,212,170,0.02));
+    border: 1px solid rgba(0,212,170,0.15);
+    border-radius: 12px; padding: 24px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+  }
+  .context-item h5 { font-size: 11px; color: var(--teal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .context-item p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ══════ KPI CARDS ══════ */
+  .kpi-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 12px; }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .kpi-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; margin-bottom: 14px;
+  }
+  .kpi-icon.teal { background: rgba(0,212,170,0.12); }
+  .kpi-icon.gold { background: rgba(240,180,41,0.12); }
+  .kpi-icon.red { background: rgba(255,107,107,0.12); }
+  .kpi-icon.blue { background: rgba(77,166,255,0.12); }
+  .kpi-icon.purple { background: rgba(167,139,250,0.12); }
+  .kpi-label { font-size: 10px; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .kpi-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 8px; }
+  .kpi-value.teal { color: var(--teal); }
+  .kpi-value.gold { color: var(--gold); }
+  .kpi-value.red { color: var(--red); }
+  .kpi-value.blue { color: var(--blue); }
+  .kpi-value.purple { color: var(--purple); }
+  .kpi-change {
+    font-size: 11px; display: flex; align-items: center; gap: 4px;
+  }
+  .kpi-change.up { color: var(--teal); }
+  .kpi-change.down { color: var(--red); }
+  .kpi-change.neutral { color: var(--muted); }
+  .kpi-sub { font-size: 10px; color: var(--muted2); margin-top: 2px; }
+
+  /* ══════ CHARTS GRID ══════ */
+  .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .charts-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+  }
+  .chart-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .chart-sub { font-size: 11px; color: var(--muted); margin-bottom: 20px; }
+  .chart-wrap { position: relative; }
+
+  /* ══════ RFM SEGMENTATION ══════ */
+  .rfm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 16px; }
+  .rfm-seg {
+    border-radius: 10px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card2); border: 1px solid var(--border);
+  }
+  .rfm-badge {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .rfm-info h5 { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .rfm-info p { font-size: 11px; color: var(--muted); }
+  .rfm-info strong { color: var(--teal); }
+  .seg-champions .rfm-badge { background: rgba(0,212,170,0.15); }
+  .seg-loyal .rfm-badge { background: rgba(240,180,41,0.15); }
+  .seg-atrisk .rfm-badge { background: rgba(255,107,107,0.15); }
+  .seg-new .rfm-badge { background: rgba(77,166,255,0.15); }
+
+  /* ══════ FUNNEL ══════ */
+  .funnel-wrap { padding: 12px 0; }
+  .funnel-step {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .funnel-label { font-size: 12px; color: var(--muted); width: 130px; flex-shrink: 0; text-align: right; }
+  .funnel-bar-wrap { flex: 1; height: 32px; background: rgba(255,255,255,0.04); border-radius: 6px; overflow: hidden; position: relative; }
+  .funnel-bar {
+    height: 100%; border-radius: 6px;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 10px;
+    font-size: 11px; font-weight: 600; color: #000;
+    transition: width 1s ease;
+    position: relative;
+  }
+  .funnel-pct { font-size: 11px; color: var(--muted); width: 48px; text-align: right; }
+  .funnel-count { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--muted2); width: 60px; }
+
+  /* ══════ COHORT HEATMAP ══════ */
+  .cohort-table { width: 100%; border-collapse: separate; border-spacing: 3px; font-size: 11px; }
+  .cohort-table th { color: var(--muted2); font-weight: 500; padding: 4px 6px; text-align: center; font-size: 10px; }
+  .cohort-table td { padding: 6px; border-radius: 4px; text-align: center; font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; }
+  .cohort-table .cohort-label { color: var(--muted); text-align: left; padding-left: 0; white-space: nowrap; }
+
+  /* ══════ INSIGHTS ══════ */
+  .insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    position: relative; overflow: hidden;
+  }
+  .insight-card.primary {
+    background: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(0,212,170,0.03));
+    border-color: rgba(0,212,170,0.2);
+    grid-column: 1 / -1;
+  }
+  .insight-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 40px; font-weight: 500;
+    color: rgba(0,212,170,0.12);
+    position: absolute; top: 12px; right: 20px;
+    line-height: 1;
+  }
+  .insight-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .insight-tag {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .tag-finding { background: rgba(0,212,170,0.12); color: var(--teal); }
+  .tag-rec { background: rgba(240,180,41,0.12); color: var(--gold); }
+  .tag-risk { background: rgba(255,107,107,0.12); color: var(--red); }
+  .tag-opp { background: rgba(77,166,255,0.12); color: var(--blue); }
+  .insight-card p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .insight-card ul { list-style: none; padding: 0; }
+  .insight-card ul li {
+    font-size: 13px; color: var(--muted); line-height: 1.7;
+    padding-left: 16px; position: relative; margin-bottom: 4px;
+  }
+  .insight-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--teal); }
+  .impact-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 12px; padding: 6px 12px;
+    background: rgba(0,212,170,0.08); border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 20px; font-size: 11px; color: var(--teal);
+  }
+
+  /* ══════ METHODOLOGY ══════ */
+  .method-flow { display: flex; gap: 0; margin-top: 8px; overflow-x: auto; }
+  .method-step {
+    flex: 1; min-width: 120px;
+    background: var(--card); padding: 18px 16px;
+    border: 1px solid var(--border); position: relative;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .method-step:first-child { border-radius: 10px 0 0 10px; }
+  .method-step:last-child { border-radius: 0 10px 10px 0; }
+  .method-step:not(:first-child) { border-left: none; }
+  .method-step::after {
+    content: '›';
+    position: absolute; right: -10px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--teal); font-size: 18px; z-index: 2;
+    background: var(--bg); padding: 0 2px;
+  }
+  .method-step:last-child::after { display: none; }
+  .method-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--teal); opacity: 0.6; }
+  .method-name { font-size: 12px; font-weight: 600; }
+  .method-tools { font-size: 10px; color: var(--muted2); }
+
+  /* ══════ TOOLS USED ══════ */
+  .tools-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .tool-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    font-size: 12px; font-weight: 500;
+  }
+  .tool-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ══════ FOOTER ══════ */
+  .footer {
+    border-top: 1px solid var(--border);
+    margin-top: 32px;
+    padding: 32px 32px;
+    max-width: 1280px;
+    margin-left: auto; margin-right: auto;
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-left h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600; margin-bottom: 4px;
+  }
+  .footer-left p { font-size: 12px; color: var(--muted); }
+  .footer-links { display: flex; gap: 12px; }
+  .footer-link {
+    padding: 8px 18px; border-radius: 8px;
+    font-size: 12px; font-weight: 500; text-decoration: none;
+    display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+  }
+  .footer-link.primary {
+    background: rgba(0,212,170,0.12);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--teal);
+  }
+  .footer-link.secondary {
+    background: var(--card); border: 1px solid var(--border); color: var(--muted);
+  }
+  .footer-link:hover { opacity: 0.8; transform: translateY(-1px); }
+  .footer-copy { font-size: 11px; color: var(--muted2); margin-top: 16px; text-align: center; }
+
+  /* ══════ SCROLLBAR ══════ */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 3px; }
+
+  /* ══════ RESPONSIVE HELPERS ══════ */
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .charts-row-3 { grid-template-columns: 1fr 1fr; }
+    .problem-grid { grid-template-columns: 1fr; }
+    .insights-grid { grid-template-columns: 1fr; }
+    .context-block { grid-template-columns: 1fr; }
+  }
+
+  /* ══════ ANIMATIONS ══════ */
+  .fade-in { animation: fadeIn 0.6s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in:nth-child(2) { animation-delay: 0.1s; }
+  .fade-in:nth-child(3) { animation-delay: 0.2s; }
+  .fade-in:nth-child(4) { animation-delay: 0.3s; }
+  .fade-in:nth-child(5) { animation-delay: 0.4s; }
+
+  .divider { height: 1px; background: var(--border); max-width: 1280px; margin: 0 auto 48px; padding: 0 32px; }
+  .divider-line { height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <div class="brand-dot"></div>
+      <div class="brand-text">Business Intelligence Report &nbsp;/&nbsp; <span>Sania Sultana</span></div>
+    </div>
+    <div class="topbar-links">
+      <a href="https://www.linkedin.com/in/saniasultana16/" target="_blank">⟶ LinkedIn</a>
+      <a href="https://github.com/Sania1603" target="_blank">⟶ GitHub</a>
+      <span class="topbar-tag">BA Portfolio · 2025–26</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero fade-in">
+  <div class="hero-eyebrow">
+    <div class="eyebrow-line"></div>
+    <div class="eyebrow-text">Business Analysis Case Study · E-Commerce Domain</div>
+  </div>
+  <h1>Customer Churn &<br><em>Revenue Leakage</em> Analysis</h1>
+  <p class="hero-sub">
+    A data-driven investigation into why ZylaCart — a mid-scale D2C e-commerce brand — was losing ₹1.2Cr/month in preventable revenue. From raw behavioral data to boardroom recommendations.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-item">
+      <span class="meta-label">Analyst</span>
+      <span class="meta-value">Sania Sultana</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Domain</span>
+      <span class="meta-value">E-Commerce / D2C Retail</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Dataset</span>
+      <span class="meta-value">120K transactions · 18 months</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Tools Used</span>
+      <span class="meta-value">Excel · SQL · Power BI · Python</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Projected ROI</span>
+      <span class="meta-value highlight">+₹3.6Cr/year</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Period</span>
+      <span class="meta-value">Jan 2024 – Jun 2025</span>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 1: PROBLEM STATEMENT -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">Business Context & Problem Statement</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <h4>🎯 Business Problem</h4>
+      <p>ZylaCart's management observed a 34% decline in repeat purchase rate over 6 months despite increasing new customer acquisition spend. CAC rose 58% while revenue grew only 12% — a clear sign of a <strong>retention & monetisation breakdown</strong>.</p>
+    </div>
+    <div class="problem-card gold">
+      <h4>📋 Analytical Objectives</h4>
+      <p>Identify the root cause of revenue stagnation by analysing customer lifecycle, purchase patterns, cart abandonment, and product-level profitability. Quantify each leakage point and recommend prioritised interventions.</p>
+    </div>
+    <div class="problem-card blue">
+      <h4>📊 Scope of Analysis</h4>
+      <p>18-month transactional data covering 120K orders, 48K unique customers, 6 product categories, and 3 regional markets (South, West, North India). Focus on FY2024–25 post-pandemic normalisation phase.</p>
+    </div>
+    <div class="problem-card red">
+      <h4>⚠️ Stakeholder Impact</h4>
+      <p>Revenue leak of estimated ₹1.2Cr/month identified across cart abandonment (₹42L), inactive customers (₹38L), and poor cross-sell conversion (₹40L). Business needs actionable fixes within 90-day sprint cycle.</p>
+    </div>
+  </div>
+  <div class="context-block" style="margin-top:16px;">
+    <div class="context-item">
+      <h5>Hypothesis</h5>
+      <p>High first-purchase discount dependency is creating transactional-only customers with no loyalty trigger, resulting in <90-day churn post-acquisition.</p>
+    </div>
+    <div class="context-item">
+      <h5>Methodology Used</h5>
+      <p>RFM Segmentation · Cohort Retention · Funnel Analysis · ABC Product Classification · What-if Revenue Modelling</p>
+    </div>
+    <div class="context-item">
+      <h5>Expected Output</h5>
+      <p>Prioritised recommendation matrix with estimated revenue impact, effort scoring, and 30-60-90 day implementation roadmap for the product & marketing teams.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- SECTION 2: KPI DASHBOARD -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">Executive KPI Summary — FY2024–25</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card fade-in">
+      <div class="kpi-icon teal">💰</div>
+      <div class="kpi-label">Total Revenue</div>
+      <div class="kpi-value teal">₹8.4Cr</div>
+      <div class="kpi-change up">▲ +12.3% YoY</div>
+      <div class="kpi-sub">vs ₹7.5Cr FY2023–24</div>
+    </div>
+    <div class="kpi-card fade-in">
+      <div class="kpi-icon red">📉</div>
+      <div class="kpi-label">Repeat Purchase Rate</div>
+      <div class="kpi-value red">28.4%</div>
+      <div class="kpi-change down">▼ −34% vs prev year</div>
+      <div class="kpi-sub">Benchmark: 45–55%</div>
+    </div>
+    <div class="kpi-card fade-in">
+      <div class="kpi-icon gold">🎯</div>
+      <div class="kpi-label">Customer Acq. Cost</div>
+      <div class="kpi-value gold">₹840</div>
+      <div class="kpi-change down">▲ +58% — critical</div>
+      <div class="kpi-sub">LTV:CAC = 2.1x (low)</div>
+    </div>
+    <div class="kpi-card fade-in">
+      <div class="kpi-icon blue">👥</div>
+      <div class="kpi-label">Customer LTV</div>
+      <div class="kpi-value blue">₹1,764</div>
+      <div class="kpi-change neutral">→ Flat (no growth)</div>
+      <div class="kpi-sub">Target: ₹3,500+</div>
+    </div>
+    <div class="kpi-card fade-in">
+      <div class="kpi-icon purple">🛒</div>
+      <div class="kpi-label">Cart Abandon Rate</div>
+      <div class="kpi-value purple">68.2%</div>
+      <div class="kpi-change down">▲ +9pts — worsening</div>
+      <div class="kpi-sub">Industry avg: 55–60%</div>
+    </div>
+  </div>
+
+  <!-- REVENUE CHART + DONUT -->
+  <div class="charts-row" style="margin-top:16px;">
+    <div class="chart-card">
+      <div class="chart-title">Monthly Revenue vs New Customer Trend</div>
+      <div class="chart-sub">₹ Revenue (bars) & New Customers Acquired (line) — Jan 2024 to Jun 2025</div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Revenue by Customer Segment</div>
+      <div class="chart-sub">% contribution to total revenue</div>
+      <div class="chart-wrap" style="height:180px; margin-top:10px;">
+        <canvas id="segmentChart"></canvas>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;">
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:2px;background:#00d4aa;display:inline-block"></span>Champions 31%</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:2px;background:#f0b429;display:inline-block"></span>Loyal 24%</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:2px;background:#4da6ff;display:inline-block"></span>At-Risk 22%</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:2px;background:#ff6b6b;display:inline-block"></span>Lost 14%</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)"><span style="width:10px;height:10px;border-radius:2px;background:#a78bfa;display:inline-block"></span>New 9%</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- SECTION 3: RFM SEGMENTATION -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">RFM Customer Segmentation Analysis</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">RFM Score Distribution — 48,000 Customers</div>
+      <div class="chart-sub">Recency × Frequency × Monetary analysis across 5 scored segments</div>
+      <div class="chart-wrap" style="height:220px;">
+        <canvas id="rfmChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Segment Breakdown</div>
+      <div class="chart-sub">% of customer base with avg LTV</div>
+      <div class="rfm-grid">
+        <div class="rfm-seg seg-champions">
+          <div class="rfm-badge">🏆</div>
+          <div class="rfm-info">
+            <h5>Champions</h5>
+            <p><strong>18%</strong> of base · Avg LTV <strong>₹4,200</strong></p>
+          </div>
+        </div>
+        <div class="rfm-seg seg-loyal">
+          <div class="rfm-badge">💛</div>
+          <div class="rfm-info">
+            <h5>Loyal Customers</h5>
+            <p><strong>22%</strong> of base · Avg LTV <strong>₹2,800</strong></p>
+          </div>
+        </div>
+        <div class="rfm-seg seg-atrisk">
+          <div class="rfm-badge">⚠️</div>
+          <div class="rfm-info">
+            <h5>At-Risk</h5>
+            <p><strong>29%</strong> of base · Used to buy but <strong>inactive 90d+</strong></p>
+          </div>
+        </div>
+        <div class="rfm-seg seg-new">
+          <div class="rfm-badge">🌱</div>
+          <div class="rfm-info">
+            <h5>New Customers</h5>
+            <p><strong>31%</strong> of base · <strong>1 purchase only</strong>, high churn risk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- SECTION 4: FUNNEL + COHORT -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">Conversion Funnel & Cohort Retention</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">Purchase Conversion Funnel</div>
+      <div class="chart-sub">From website visit to successful order placement — Q4 FY2025</div>
+      <div class="funnel-wrap">
+        <div class="funnel-step">
+          <div class="funnel-label">Website Visit</div>
+          <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%; background:linear-gradient(90deg,#00d4aa,#00b894);">1,00,000</div></div>
+          <div class="funnel-pct">100%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-label">Product View</div>
+          <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:62%; background:linear-gradient(90deg,#00b894,#009e80);">62,000</div></div>
+          <div class="funnel-pct">62%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-label">Add to Cart</div>
+          <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:38%; background:linear-gradient(90deg,#f0b429,#e09900);">38,000</div></div>
+          <div class="funnel-pct">38%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-label">Checkout Start</div>
+          <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:22%; background:linear-gradient(90deg,#f0b429,#c97e00);">22,000</div></div>
+          <div class="funnel-pct">22%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-label">Payment Done</div>
+          <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:14%; background:linear-gradient(90deg,#ff6b6b,#e05050);">14,000</div></div>
+          <div class="funnel-pct">14%</div>
+        </div>
+        <div class="funnel-step">
+          <div class="funnel-label">Order Placed ✓</div>
+          <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:11.8%; background:linear-gradient(90deg,#4da6ff,#2e8aed);">11,800</div></div>
+          <div class="funnel-pct">11.8%</div>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding:12px; background:rgba(255,107,107,0.06); border:1px solid rgba(255,107,107,0.15); border-radius:8px; font-size:12px; color:var(--muted);">
+        🔴 <strong style="color:#ff6b6b;">Critical drop: Cart → Checkout</strong> — 42% abandonment at checkout initiation, primarily due to unexpected shipping costs and mandatory account creation.
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Cohort Retention Heatmap</div>
+      <div class="chart-sub">% of customers returning each month after first purchase</div>
+      <div style="overflow-x:auto; margin-top:8px;">
+        <table class="cohort-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Cohort</th>
+              <th>M0</th><th>M1</th><th>M2</th><th>M3</th><th>M4</th><th>M5</th>
+            </tr>
+          </thead>
+          <tbody id="cohortBody"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <span style="font-size:10px; color:var(--muted2);">Low</span>
+        <div style="display:flex;gap:3px;">
+          <div style="width:16px;height:12px;border-radius:2px;background:rgba(0,212,170,0.12)"></div>
+          <div style="width:16px;height:12px;border-radius:2px;background:rgba(0,212,170,0.28)"></div>
+          <div style="width:16px;height:12px;border-radius:2px;background:rgba(0,212,170,0.48)"></div>
+          <div style="width:16px;height:12px;border-radius:2px;background:rgba(0,212,170,0.65)"></div>
+          <div style="width:16px;height:12px;border-radius:2px;background:rgba(0,212,170,0.85)"></div>
+        </div>
+        <span style="font-size:10px; color:var(--muted2);">High</span>
+        <span style="font-size:10px; color:var(--muted2); margin-left:8px;">Key insight: All cohorts drop to &lt;20% by M2</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- SECTION 5: PRODUCT ANALYSIS -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">Product & Category Performance</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="charts-row-3">
+    <div class="chart-card" style="grid-column: span 2;">
+      <div class="chart-title">Revenue by Category — ABC Classification</div>
+      <div class="chart-sub">A-class (top 20% products generating 80% revenue) vs B & C-class</div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="productChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Avg Order Value Trend</div>
+      <div class="chart-sub">Monthly AOV movement — signals pricing sensitivity</div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="aovChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- SECTION 6: KEY INSIGHTS & RECOMMENDATIONS -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">Key Findings & Actionable Recommendations</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="insights-grid">
+    <div class="insight-card primary">
+      <div class="insight-num">F1</div>
+      <h4><span class="insight-tag tag-finding">Core Finding</span> Discount Dependency Cycle Breaking LTV</h4>
+      <p>83% of first-time purchases are made using a discount code (avg 20–30% off). These customers show a 91% churn rate within 60 days if not given another discount. ZylaCart is essentially paying ₹840 CAC to acquire customers who buy once at a loss and never return — creating a unit economics death spiral.</p>
+      <div class="impact-badge">💡 Estimated Revenue Recovery: ₹1.8Cr/year if repeat rate lifted to 45%</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">R1</div>
+      <h4><span class="insight-tag tag-rec">Recommendation</span> Launch Value-Based Loyalty Programme</h4>
+      <ul>
+        <li>Replace flat discounts with a points-based rewards system (earn on every ₹100 spent)</li>
+        <li>Introduce tier upgrades at ₹2K, ₹5K, ₹10K lifetime spend with exclusive perks</li>
+        <li>Target "At-Risk" segment (29%) with personalised win-back emails at Day 60 of inactivity</li>
+        <li>A/B test "loyalty reveal" at checkout to increase perceived value of repeat purchase</li>
+      </ul>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">R2</div>
+      <h4><span class="insight-tag tag-risk">Risk Mitigation</span> Fix Cart Abandonment (₹42L/month loss)</h4>
+      <ul>
+        <li>Remove mandatory account creation — switch to guest checkout with optional save</li>
+        <li>Show shipping cost upfront on product page, not at checkout — reduces checkout shock</li>
+        <li>Implement 3-step cart recovery email sequence (1hr → 24hr → 72hr with social proof)</li>
+        <li>Add UPI one-click payment; 48% of drop-offs happen at payment step</li>
+      </ul>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">R3</div>
+      <h4><span class="insight-tag tag-opp">Opportunity</span> Cross-Sell to Champions Segment</h4>
+      <ul>
+        <li>Top 18% Champions generate 31% revenue — zero cross-sell campaigns currently active</li>
+        <li>Build product affinity matrix using co-purchase data (SQL analysis completed)</li>
+        <li>Create "Curated for You" email series based on category purchase history</li>
+        <li>Projected uplift: +15% revenue from existing customers, zero new CAC spend</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PRIORITY MATRIX -->
+  <div class="chart-card" style="margin-top:16px;">
+    <div class="chart-title">Recommendation Priority Matrix</div>
+    <div class="chart-sub">Effort vs. Revenue Impact — 90-day implementation roadmap</div>
+    <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:12px; margin-top:16px;">
+      <div style="background:rgba(0,212,170,0.06);border:1px solid rgba(0,212,170,0.15);border-radius:8px;padding:16px;">
+        <div style="font-size:10px;color:var(--teal);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px;">🟢 Do Now (0–30 days)</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+          • Guest checkout toggle<br>• Upfront shipping cost display<br>• Cart recovery email #1 (1hr)<br>• UPI payment integration
+        </div>
+      </div>
+      <div style="background:rgba(240,180,41,0.06);border:1px solid rgba(240,180,41,0.15);border-radius:8px;padding:16px;">
+        <div style="font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px;">🟡 Plan (30–60 days)</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+          • Loyalty programme MVP launch<br>• At-Risk win-back campaign<br>• 3-step recovery email sequence<br>• Champions cross-sell series
+        </div>
+      </div>
+      <div style="background:rgba(77,166,255,0.06);border:1px solid rgba(77,166,255,0.15);border-radius:8px;padding:16px;">
+        <div style="font-size:10px;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px;">🔵 Scale (60–90 days)</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.8;">
+          • Personalised product affinity model<br>• Tier loyalty upgrade mechanics<br>• CAC reduction via referral system<br>• Monthly cohort tracking dashboard
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- SECTION 7: METHODOLOGY -->
+<div class="section fade-in">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">Methodology & Tools</span>
+    <div class="section-line"></div>
+  </div>
+  <div class="method-flow">
+    <div class="method-step">
+      <div class="method-num">01</div>
+      <div class="method-name">Data Collection</div>
+      <div class="method-tools">SQL queries on transactional DB, GA4 export, CRM data</div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">02</div>
+      <div class="method-name">Data Cleaning</div>
+      <div class="method-tools">Python (pandas), removed nulls, normalised customer IDs</div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">03</div>
+      <div class="method-name">RFM Scoring</div>
+      <div class="method-tools">Excel pivot, quintile scoring, 5-segment classification</div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">04</div>
+      <div class="method-name">Cohort Analysis</div>
+      <div class="method-tools">SQL cohort query, heatmap via Python matplotlib</div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">05</div>
+      <div class="method-name">Funnel Mapping</div>
+      <div class="method-tools">GA4 funnel report + custom SQL drop-off queries</div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">06</div>
+      <div class="method-name">Dashboarding</div>
+      <div class="method-tools">Power BI (KPI views), Excel dynamic charts</div>
+    </div>
+    <div class="method-step">
+      <div class="method-num">07</div>
+      <div class="method-name">BRD / FRD</div>
+      <div class="method-tools">Requirements doc, user stories, stakeholder sign-off</div>
+    </div>
+  </div>
+  <div class="tools-row">
+    <div class="tool-chip"><div class="tool-dot" style="background:#217346;"></div>Microsoft Excel (Advanced)</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#f2c300;"></div>Power BI Desktop</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#3776ab;"></div>Python (pandas, matplotlib)</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#336791;"></div>SQL (PostgreSQL)</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#ff6c37;"></div>Google Analytics 4</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#4285f4;"></div>Google Sheets</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#00c4cc;"></div>Confluence (BRD docs)</div>
+    <div class="tool-chip"><div class="tool-dot" style="background:#0052cc;"></div>Jira (Agile tracking)</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <h3>Sania Sultana</h3>
+      <p>Business Analyst · E-Commerce & Product Analytics · Hyderabad, India</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/saniasultana16/" target="_blank" class="footer-link primary">🔗 LinkedIn Profile</a>
+      <a href="https://github.com/Sania1603" target="_blank" class="footer-link secondary">⚙ GitHub Portfolio</a>
+    </div>
+  </div>
+  <div class="footer-copy">Business Intelligence Case Study — ZylaCart E-Commerce Analysis · Built by Sania Sultana · 2025–26 · This is a portfolio project using simulated business data for analytical demonstration purposes.</div>
+</div>
+
+<script>
+// ═══════════════════════════════
+// CHART DEFAULTS
+// ═══════════════════════════════
+Chart.defaults.color = '#8892a4';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+Chart.defaults.font.family = 'DM Sans';
+
+// ═══════════════════════════════
+// 1. REVENUE CHART
+// ═══════════════════════════════
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const months = ['Jan24','Feb24','Mar24','Apr24','May24','Jun24','Jul24','Aug24','Sep24','Oct24','Nov24','Dec24','Jan25','Feb25','Mar25','Apr25','May25','Jun25'];
+const revenue = [38,42,45,40,48,52,49,55,58,71,80,76,54,58,62,59,66,70];
+const newCusts = [2.1,2.4,2.8,2.3,3.1,3.4,3.0,3.6,3.9,4.8,5.2,4.9,3.5,3.7,4.1,3.8,4.3,4.6];
+
+const revGrad = revenueCtx.createLinearGradient(0, 0, 0, 220);
+revGrad.addColorStop(0, 'rgba(0,212,170,0.3)');
+revGrad.addColorStop(1, 'rgba(0,212,170,0.02)');
+
+new Chart(revenueCtx, {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Revenue (₹L)',
+        data: revenue,
+        backgroundColor: revGrad,
+        borderColor: 'rgba(0,212,170,0.5)',
+        borderWidth: 1,
+        borderRadius: 4,
+        yAxisID: 'y'
+      },
+      {
+        label: 'New Customers (K)',
+        data: newCusts,
+        type: 'line',
+        borderColor: '#f0b429',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#f0b429',
+        tension: 0.4,
+        yAxisID: 'y1'
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1a2540',
+      borderColor: 'rgba(255,255,255,0.1)',
+      borderWidth: 1,
+    }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 10 }, callback: v => '₹'+v+'L' } },
+      y1: { position: 'right', grid: { display: false }, ticks: { font: { size: 10 }, callback: v => v+'K' } }
+    }
+  }
+});
+
+// ═══════════════════════════════
+// 2. SEGMENT DONUT
+// ═══════════════════════════════
+new Chart(document.getElementById('segmentChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Champions', 'Loyal', 'At-Risk', 'Lost', 'New'],
+    datasets: [{
+      data: [31, 24, 22, 14, 9],
+      backgroundColor: ['#00d4aa','#f0b429','#4da6ff','#ff6b6b','#a78bfa'],
+      borderColor: '#111827',
+      borderWidth: 3,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1a2540',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}% of revenue` }
+      }
+    }
+  }
+});
+
+// ═══════════════════════════════
+// 3. RFM BAR CHART
+// ═══════════════════════════════
+new Chart(document.getElementById('rfmChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Champions\n(R5F5M5)','Loyal\n(R3-4F3-4)','Potential\n(R3F1-2)','At-Risk\n(R2F2-3)','Lost\n(R1F1-2)'],
+    datasets: [
+      {
+        label: 'Customer Count (K)',
+        data: [8.6, 10.6, 7.2, 13.9, 7.7],
+        backgroundColor: ['rgba(0,212,170,0.7)','rgba(240,180,41,0.7)','rgba(77,166,255,0.7)','rgba(255,107,107,0.7)','rgba(167,139,250,0.7)'],
+        borderColor: ['#00d4aa','#f0b429','#4da6ff','#ff6b6b','#a78bfa'],
+        borderWidth: 1, borderRadius: 6
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1a2540', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+      callbacks: { label: ctx => ` ${ctx.raw}K customers` }
+    }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 10 }, callback: v => v+'K' } }
+    }
+  }
+});
+
+// ═══════════════════════════════
+// 4. PRODUCT/CATEGORY CHART
+// ═══════════════════════════════
+new Chart(document.getElementById('productChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Clothing & Apparel','Electronics Acc.','Home & Living','Beauty & Skin','Sports & Fitness','Books & Stationery'],
+    datasets: [
+      { label: 'A-Class Revenue (₹L)', data: [210, 165, 142, 98, 74, 32], backgroundColor: 'rgba(0,212,170,0.65)', borderColor: '#00d4aa', borderWidth: 1, borderRadius: 4 },
+      { label: 'B-Class Revenue (₹L)', data: [95, 72, 58, 44, 31, 18], backgroundColor: 'rgba(240,180,41,0.45)', borderColor: '#f0b429', borderWidth: 1, borderRadius: 4 },
+      { label: 'C-Class Revenue (₹L)', data: [38, 29, 24, 18, 12, 7], backgroundColor: 'rgba(77,166,255,0.35)', borderColor: '#4da6ff', borderWidth: 1, borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { font: { size: 10 }, color: '#8892a4', boxWidth: 12 } }, tooltip: {
+      backgroundColor: '#1a2540', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1
+    }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 10 }, callback: v => '₹'+v+'L' }, stacked: false }
+    }
+  }
+});
+
+// ═══════════════════════════════
+// 5. AOV TREND
+// ═══════════════════════════════
+const aovGrad = document.getElementById('aovChart').getContext('2d').createLinearGradient(0, 0, 0, 200);
+aovGrad.addColorStop(0, 'rgba(167,139,250,0.3)');
+aovGrad.addColorStop(1, 'rgba(167,139,250,0.02)');
+
+new Chart(document.getElementById('aovChart').getContext('2d'), {
+  type: 'line',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
+    datasets: [{
+      label: 'Avg Order Value (₹)',
+      data: [842,858,891,834,912,944,898,972,1005,1120,1188,1072,890,908,948,912,972,988],
+      borderColor: '#a78bfa',
+      backgroundColor: aovGrad,
+      borderWidth: 2,
+      pointRadius: 2,
+      fill: true,
+      tension: 0.4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1a2540', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+      callbacks: { label: ctx => ` AOV: ₹${ctx.raw}` }
+    }},
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 9 }, callback: v => '₹'+v } }
+    }
+  }
+});
+
+// ═══════════════════════════════
+// 6. COHORT HEATMAP TABLE
+// ═══════════════════════════════
+const cohortData = [
+  { label: 'Jan 2024', values: [100, 32, 21, 16, 13, 11] },
+  { label: 'Mar 2024', values: [100, 29, 19, 15, 12, 10] },
+  { label: 'May 2024', values: [100, 35, 23, 17, 14, '--'] },
+  { label: 'Jul 2024', values: [100, 31, 20, 16, '--', '--'] },
+  { label: 'Sep 2024', values: [100, 28, 18, '--', '--', '--'] },
+  { label: 'Nov 2024', values: [100, 33, '--', '--', '--', '--'] },
+  { label: 'Jan 2025', values: [100, '--', '--', '--', '--', '--'] },
+];
+
+function heatColor(val) {
+  if (val === '--' || val === 100) return 'rgba(255,255,255,0.04)';
+  if (val >= 30) return 'rgba(0,212,170,0.6)';
+  if (val >= 20) return 'rgba(0,212,170,0.38)';
+  if (val >= 15) return 'rgba(0,212,170,0.25)';
+  if (val >= 10) return 'rgba(0,212,170,0.15)';
+  return 'rgba(0,212,170,0.08)';
+}
+
+function textColor(val) {
+  if (val === '--') return '#2a3444';
+  if (val === 100) return '#f0f4ff';
+  if (val >= 20) return '#f0f4ff';
+  return '#8892a4';
+}
+
+const tbody = document.getElementById('cohortBody');
+cohortData.forEach(row => {
+  const tr = document.createElement('tr');
+  const labelTd = document.createElement('td');
+  labelTd.className = 'cohort-label';
+  labelTd.textContent = row.label;
+  tr.appendChild(labelTd);
+  row.values.forEach(v => {
+    const td = document.createElement('td');
+    td.style.background = heatColor(v);
+    td.style.color = textColor(v);
+    td.textContent = v === '--' ? '—' : v === 100 ? '100%' : v + '%';
+    tr.appendChild(td);
+  });
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
