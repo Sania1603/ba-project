@@ -22,4 +22,4 @@ Delivered a 30-60-90 day recommendation roadmap with projected ₹3.6Cr/year rev
 ## Connect
 [LinkedIn](https://www.linkedin.com/in/saniasultana16/)
 
-mail - saniax286@gmail.com | Open for Business Analyst, Data Analyst — Associate, Intern & Fresher roles
+mail - saniax286@gmail.com | Open for Business Analyst, Data Analyst - Associate, Intern & Fresher roles
